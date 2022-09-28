@@ -1,0 +1,30 @@
+\renewcommand\algorithmicrequire{\textbf{Input:}}
+\begin{algorithm}
+    \small
+    \caption{Pseudocode of \textit{InforMin-CL} in a PyTorch-like style.}
+    \label{algorithm 1}
+    \begin{algorithmic}
+        \REQUIRE{batch size N, temperature $\tau$, structure of $f$ and $\Gamma $.}
+        \ENSURE{encoder network $f\left(  \cdot  \right)$.}
+        \FOR{sampled minibatch $\left\{ {{x_k}} \right\}_{k = 1}^N$}
+            \FORALL{$k \in \left\{ {1, \ldots ,N} \right\}$}
+                \STATE draw two augmentation functions $t \sim \Gamma $, $t' \sim \Gamma $ 
+                \STATE ${\tilde x_{2k - 1}} = t\left( {{x_k}} \right)$
+                \STATE ${z_{2k - 1}} = f\left( {{{\tilde x}_{2k - 1}}} \right)$
+                \STATE ${\tilde x_{2k}} = t'\left( {{x_k}} \right)$
+                \STATE ${z_{2k}} = f\left( {{{\tilde x}_{2k}}} \right)$
+            \ENDFOR
+            \FORALL {$i \in \left\{ {1, \ldots ,2N} \right\}$ and $j \in \left\{ {1, \ldots ,2N} \right\}$}
+                \STATE ${s_{i,j}} = z_i^{\rm T}{z_j}/\left( {\left\| {{z_i}} \right\|\left\| {{z_j}} \right\|} \right)$
+            \ENDFOR
+            \STATE ${L_C} = \max {\rm{E}}\left[ {\frac{1}{N}\sum\limits_{i = 1}^N {\log \frac{{\exp \left( {{{{s_{2i - 1,2i}}} \mathord{\left/
+ {\vphantom {{{s_{2i - 1,2i}}} \tau }} \right.
+ \kern-\nulldelimiterspace} \tau }} \right)}}{{\frac{1}{N}\sum\limits_{k = 1}^N {\exp \left( {{{{s_{2i - 1,2k}}} \mathord{\left/
+ {\vphantom {{{s_{2i - 1,2k}}} \tau }} \right.
+ \kern-\nulldelimiterspace} \tau }} \right)} }}} } \right]$
+            \STATE ${L_R} = {\rm E}\left[ { - \left\| {{z_{2k - 1}} - {z_{2k}}} \right\|_2^2} \right]$
+            \STATE $L = {L_C} + {L_R}$
+            \STATE update $f$ to minimize $L$
+        \ENDFOR
+    \end{algorithmic}
+\end{algorithm}
