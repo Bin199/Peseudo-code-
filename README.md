@@ -1,2 +1,2 @@
 # Peseudo-code
-This repository contains the code for pseudo-code in the paper
+This repository contains the code of pseudo-code in the paper
